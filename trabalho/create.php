@@ -18,9 +18,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $tamanho = $_POST['tamanho'];
     $preco = $_POST['preco'];
     $descricao = $_POST['descricao'];
+    $categoria_id = $_POST['categoria_id']; // 🔥 ESSA LINHA É FUNDAMENTAL
 
-    $sql = "INSERT INTO camisetas (modelo, cor, tamanho, preco, descricao) 
-            VALUES ('$modelo', '$cor', '$tamanho', '$preco', '$descricao')";
+    $sql = "INSERT INTO camisetas (modelo, cor, tamanho, preco, descricao, categoria_id) 
+    VALUES ('$modelo', '$cor', '$tamanho', '$preco', '$descricao', '$categoria_id')";
 
     if ($conn->query($sql) === TRUE) {
         echo "<div class='alert alert-success'>Camiseta cadastrada com sucesso!</div>";
@@ -35,10 +36,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <label class="form-label">Modelo</label>
         <input type="text" name="modelo" class="form-control" required>
     </div>
+
     <div class="col-md-6">
         <label class="form-label">Cor</label>
         <input type="text" name="cor" class="form-control" required>
     </div>
+
     <div class="col-md-4">
         <label class="form-label">Tamanho</label>
         <select name="tamanho" class="form-select" required>
@@ -49,14 +52,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <option>GG</option>
         </select>
     </div>
+
     <div class="col-md-4">
         <label class="form-label">Preço</label>
         <input type="number" step="0.01" name="preco" class="form-control" required>
     </div>
+
+    <div class="col-md-4">
+        <label class="form-label">Categoria</label>
+        <select name="categoria_id" class="form-select" required>
+            <option value="">Selecione</option>
+            <?php
+            $catSql = "SELECT * FROM categorias";
+            $catResult = $conn->query($catSql);
+            while($cat = $catResult->fetch_assoc()) {
+                echo "<option value='".$cat['id']."'>".$cat['nome']."</option>";
+            }
+            ?>
+        </select>
+    </div>
+
     <div class="col-12">
         <label class="form-label">Descrição</label>
         <textarea name="descricao" class="form-control"></textarea>
     </div>
+
     <div class="col-12">
         <button type="submit" class="btn btn-success">Cadastrar</button>
         <a href="read.php" class="btn btn-secondary">Voltar</a>
